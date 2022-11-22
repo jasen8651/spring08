@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board">
+	<select id="count" resultType="int">
+		select count(*)
+		from board
+	</select>
+
+	<select id="list" parameterType="dto.PageDTO"
+		resultType="dto.BoarDTO">
+ 	<![CDATA[
+ 	select b.* from 
+	(select rownum as rm, a.* from(
+  	select * from board
+  	order by ref desc, re_step asc) a)b
+	where b.rm >=#{startRow}  and b.rm<=#{endRow}
+ 	]]>
+	</select>
+
+
+	<insert id="save" parameterType="dto.BoarDTO">
+		insert into board(num, writer, email, subject, reg_date, readcount,
+		ref, re_step, re_level, content, ip, upload)
+		values(board_num_seq.nextval, #{writer, jdbcType=VARCHAR}, #{email,
+		jdbcType=VARCHAR}, #{subject}, sysdate, 0,
+		<choose>
+			<when test="ref==0">
+				board_num_seq.nextval
+			</when>
+			<otherwise>
+				#{ref}
+			</otherwise>
+		</choose>
+		, #{re_step}, #{re_level}, #{content, jdbcType=VARCHAR}, #{ip,
+		jdbcType=VARCHAR}, #{upload, jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<update id="readCount" parameterType="int">
+		update board set readcount = readcount +1
+		where num=#{num}
+	</update>
+
+	<select id="view" parameterType="int" resultType="dto.BoarDTO">
+		select * from board
+		where num=#{num}
+	</select>
+	
+	<select id="uploadFile" parameterType="int" resultType="String">
+		select upload from board
+		where num=#{num}
+	</select>
+
+</mapper> 
