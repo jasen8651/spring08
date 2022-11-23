@@ -50,10 +50,11 @@ table, tr, th, td {
 					<td><c:url var="path" value="view.sb">
 							<c:param name="currentPage" value="${pv.currentPage}" />
 							<c:param name="num" value="${dto.num}" />
-						</c:url> <c:if test="${dto.re_level>0}">
-							<img src="images/level.gif" width="${20*dto.re_level}"
+						</c:url>
+							 <c:if test="${dto.re_level>0}">
+							<img src="resources/images/level.gif" width="${20*dto.re_level}"
 								height="15" />
-							<img src="images/re.gif" />
+							<img src="resources/images/re.gif" />
 						</c:if> <a href="${path}">${dto.subject}</a></td>
 					<td>${dto.writer}</td>
 					<td>${dto.readcount}</td>

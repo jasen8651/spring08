@@ -79,4 +79,5 @@
 		<property name="suffix" value=".jsp"/>
 		<property name="order" value="2"></property>
 	</bean>
+	
 </beans>

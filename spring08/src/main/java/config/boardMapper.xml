@@ -52,5 +52,17 @@
 		select upload from board
 		where num=#{num}
 	</select>
-
+	
+	<update id="reStepCount" parameterType="dto.BoarDTO">
+		update board set re_step = re_step+1
+		where ref=#{ref} and re_step>#{re_step}
+ 	</update>
+	<update id="update" parameterType="dto.BoarDTO">
+		update board
+		set subject=#{subject}, email=#{email}, content=#{content}
+		<if test="upload!=null">
+			, upload=#{upload}
+		</if>
+		where num = #{num}
+	</update>
 </mapper> 

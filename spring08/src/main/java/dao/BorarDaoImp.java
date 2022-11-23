@@ -43,7 +43,7 @@ public class BorarDaoImp implements BoarDAO{
 
 	@Override
 	public void reStepCount(BoarDTO dto) {
-		
+		sqlSession.update("board.reStepCount", dto);
 		
 	}
 
@@ -60,7 +60,7 @@ public class BorarDaoImp implements BoarDAO{
 
 	@Override
 	public void update(BoarDTO dto) {
-		
+		sqlSession.update("board.update", dto);
 	}
 
 	@Override

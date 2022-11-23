@@ -30,66 +30,89 @@ public class Boardcontroller {
 	private Boardservic service;
 	private PageDTO pdto;
 	private int currentPage;
-	
+
 	public Boardcontroller() {
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public void setService(Boardservic service) {
 		this.service = service;
 	}
+
 	@RequestMapping("/list.sb")
 	public ModelAndView listMethod(PageDTO pv, ModelAndView mav) {
 		int totalRecord = service.countProcess();
-		if(totalRecord>=1) {
-			if(pv.getCurrentPage() == 0)
-				this.currentPage =1;
-		}else { 
+		if (totalRecord >= 1) 
+		{
+			if (pv.getCurrentPage() == 0)
+				this.currentPage = 1;
+		 else 
 			this.currentPage = pv.getCurrentPage();
-	}	
-			
-			this.pdto = new PageDTO(currentPage, totalRecord);
-			List<BoarDTO> aList = service.listProcess(this.pdto);
-			mav.addObject("aList", aList);
-			mav.addObject("pv", this.pdto);
 		
+
+		this.pdto = new PageDTO(currentPage, totalRecord);
+		List<BoarDTO> aList = service.listProcess(this.pdto);
+		mav.addObject("aList", aList);
+		mav.addObject("pv", this.pdto);
+	}
 		mav.setViewName("board/list");
 		return mav;
 	}
-	@RequestMapping(value="/write.sb", method = RequestMethod.GET)
+
+	@RequestMapping(value = "/write.sb", method = RequestMethod.GET)
 	public ModelAndView wriAndView(BoarDTO dto, PageDTO pv, ModelAndView mav) {
-		if(dto.getRef()!=0) {
-			mav.addObject("currentPage" , pv.getCurrentPage() );
+		if (dto.getRef() != 0) {
+			mav.addObject("currentPage", pv.getCurrentPage());
 			mav.addObject("dto", dto);
 		}
 		mav.setViewName("board/write");
 		return mav;
 	}
-	@RequestMapping(value="/write.sb", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/write.sb", method = RequestMethod.POST)
 	public String writeProMethod(BoarDTO dto, PageDTO pv, HttpServletRequest request) {
 		MultipartFile file = dto.getFilename();
-		if(!file.isEmpty()) {
+		if (!file.isEmpty()) {
 			UUID random = saveCopyFile(file, request);
-			dto.setUpload(random+"_"+file.getOriginalFilename());
+			dto.setUpload(random + "_" + file.getOriginalFilename());
 		}
+
 		dto.setIp(request.getRemoteAddr());
 		service.insertProcess(dto);
-		if(dto.getRef()!=0) {
-			return "redirect:/list.sb?currentPage"+ pv.getCurrentPage();
-		}else {
+		if (dto.getRef() != 0) {
+			return "redirect:/list.sb?currentPage" + pv.getCurrentPage();
+		} else {
 			return "redirect:/list.sb";
 		}
-		
+
 	}
+	@RequestMapping(value="/update.sb", method = RequestMethod.GET)
+	public ModelAndView updateMeThod(int num, int currentPage, ModelAndView mav) {
+		mav.addObject("dto", service.updateSelectProcess(num));
+		mav.addObject("currentPage", currentPage);
+		mav.setViewName("board/update");
+		return mav;
+	}
+	@RequestMapping(value="/update.sb", method = RequestMethod.POST)
+	public String updateProMethod(BoarDTO dto, int currentPage, HttpServletRequest reqiest) {
+		MultipartFile file = dto.getFilename();
+		if(!file.isEmpty()) {
+			UUID random = saveCopyFile(file, reqiest);
+			dto.setUpload(random+"_"+file.getOriginalFilename());
+		}
+		service.updateProcess(dto, UrlPathHelper(reqiest));
+		return "redirect:/list.sb?/currentPage="+currentPage;
+	}
+
 	private UUID saveCopyFile(MultipartFile file, HttpServletRequest request) {
 		String fileName = file.getOriginalFilename();
-		
+
 		UUID random = UUID.randomUUID();
 		File fe = new File(UrlPathHelper(request));
-		if(!fe.exists()) {
+		if (!fe.exists()) {
 			fe.mkdir();
 		}
-		File ff = new File(UrlPathHelper(request), random+ "_"+ fileName);
+		File ff = new File(UrlPathHelper(request), random + "_" + fileName);
 		try {
 			FileCopyUtils.copy(file.getInputStream(), new FileOutputStream(ff));
 		} catch (FileNotFoundException e) {
@@ -101,13 +124,14 @@ public class Boardcontroller {
 		}
 		return random;
 	}
-	
+
 	private String UrlPathHelper(HttpServletRequest request) {
 		String root = request.getSession().getServletContext().getRealPath("/");
-		System.out.println("root"+root);
-		String saveDirectort = root + "temp" +File.separator;	
+		System.out.println("root" + root);
+		String saveDirectort = root + "temp" + File.separator;
 		return saveDirectort;
 	}
+
 	@RequestMapping("/view.sb")
 	public ModelAndView viewMethod(int currentPage, int num, ModelAndView mav) {
 		mav.addObject("dto", service.contentprocess(num));
@@ -115,11 +139,12 @@ public class Boardcontroller {
 		mav.setViewName("board/view");
 		return mav;
 	}
-	
+
 	@RequestMapping("/contentdownload.sb")
 	public ModelAndView downMethod(int num, ModelAndView mav) {
-		mav.addObject("num" , num);
+		mav.addObject("num", num);
 		mav.setViewName("download");
 		return mav;
 	}
+
 }
