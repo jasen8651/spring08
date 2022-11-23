@@ -103,6 +103,13 @@ public class Boardcontroller {
 		service.updateProcess(dto, UrlPathHelper(reqiest));
 		return "redirect:/list.sb?/currentPage="+currentPage;
 	}
+	@RequestMapping("/delete.sb")
+	public String deleteMethod(int num, int currentPage, HttpServletRequest request) {
+		service.deleteProcess(num, UrlPathHelper(request));
+		int totalRecord = service.countProcess();
+		this.pdto = new PageDTO(this.currentPage, totalRecord);
+		return "redirect:list.sb?curretPage="+this.pdto.getCurrentPage();
+	}
 
 	private UUID saveCopyFile(MultipartFile file, HttpServletRequest request) {
 		String fileName = file.getOriginalFilename();

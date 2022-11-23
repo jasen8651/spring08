@@ -24,18 +24,26 @@ public class PageDTO {
 		this.currentPage = currentPage;
 		this.totalCount = totalCount;
 		
-		startRow = (currentPage -1) * blockCount+1;
+		totalPage = totalCount / blockCount + (totalCount % blockCount == 0 ? 0:1); //총페이지
+		
+		  if(totalPage<currentPage) this.currentPage = totalPage;
+		 
+		
+		startRow = (this.currentPage -1) * blockCount+1;
 		
 		endRow = startRow + blockCount -1;
 		
-		totalPage = totalCount / blockCount + (totalCount % blockCount == 0 ? 0:1); //총페이지
-	
-		startPage = (int) ((currentPage-1) / blockPage) * blockPage +1;//시작페이지
+		
+		
+		
+		startPage = (int) ((this.currentPage-1) / blockPage) * blockPage +1;//시작페이지
 		endPage = startPage+blockPage-1; //끝페이지
 		if(totalPage < endPage)
 				endPage = totalPage;
 		
-		number = totalCount - (currentPage -1) * blockCount;
+		number = totalCount - (this.currentPage -1) * blockCount;
+		
+		
 			
 	}
 	

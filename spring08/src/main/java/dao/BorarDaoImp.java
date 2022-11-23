@@ -65,7 +65,7 @@ public class BorarDaoImp implements BoarDAO{
 
 	@Override
 	public void delete(int num) {
-		
+		sqlSession.delete("board.delete",num);
 	}
 	
 	@Override

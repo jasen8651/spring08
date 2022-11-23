@@ -76,8 +76,12 @@ public class BorarServicImp implements Boardservic {
 
 	@Override
 	public void deleteProcess(int num, String urlpath) {
-		// TODO Auto-generated method stub
-
+		String path = dao.getFile(num);
+		if(path!=null) {
+			File fe = new File(urlpath, path);
+			fe.delete();
+		}
+		dao.delete(num);
 	}
 
 	@Override
